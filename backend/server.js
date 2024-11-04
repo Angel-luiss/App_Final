@@ -7,16 +7,18 @@ dotenv.config();
 
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-//const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-
-// Verificar que la clave secreta de Stripe se está cargando correctamente
 console.log('Stripe Secret Key:', process.env.STRIPE_SECRET_KEY);
-
 
 app.use(cors());
 app.use(express.json());
 
+// Ruta para la raíz
+app.get('/', (req, res) => {
+  res.send('Bienvenido a la API de pagos');
+});
+
+// Ruta para crear el Payment Intent
 app.post('/create-payment-intent', async (req, res) => {
   const { amount } = req.body;
 
@@ -26,7 +28,6 @@ app.post('/create-payment-intent', async (req, res) => {
       currency: 'usd',
     });
 
-    // Verificar que el PaymentIntent se creó correctamente
     console.log('PaymentIntent creado:', paymentIntent);
 
     res.send({ clientSecret: paymentIntent.client_secret });
